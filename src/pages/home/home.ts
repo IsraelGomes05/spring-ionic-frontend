@@ -47,4 +47,9 @@ export class HomePage {
         },
         error => {});
   }
+
+  signup() {
+    console.log('aqui');
+    this.navCtrl.push('SignupPage');
+  }
 }
