@@ -5,6 +5,8 @@ import {CidadeService} from "../../services/domain/cidade.service";
 import {EstadoService} from "../../services/domain/estado.service";
 import {EstadoDto} from "../../models/estado.dto";
 import {CidadeDto} from "../../models/cidade.dto";
+import {ClienteService} from "../../services/domain/cliente.service";
+import {AlertController} from "ionic-angular";
 
 @IonicPage()
 @Component({
@@ -22,13 +24,15 @@ export class SignupPage {
     public navParams: NavParams,
     public formBuilder: FormBuilder,
     public cidadeService: CidadeService,
-    public estadoService: EstadoService) {
+    public estadoService: EstadoService,
+    public clienteService : ClienteService,
+    public alert: AlertController) {
 
     this.formGroup = this.formBuilder.group({
       nome: ['Israel gomes', [Validators.required, Validators.minLength(5), Validators.maxLength(120)]],
       email: ['israel@gmail.com', [Validators.required, Validators.email]],
       tipo: ['1', [Validators.required]],
-      cpfOuCnpj: ['46839449831', [Validators.required, Validators.minLength(11), Validators.maxLength(14)]],
+      cpfOuCnpj: ['46839490831', [Validators.required, Validators.minLength(11), Validators.maxLength(14)]],
       senha: ['123', [Validators.required]],
       logradouro: ['Rua teste', [Validators.required]],
       numero: ['12', [Validators.required]],
@@ -53,9 +57,9 @@ export class SignupPage {
         error1 => {})
   }
 
-  private updateCidade() {
-    let estadoId = this.formGroup.value.estadoId;
-    this.cidadeService.findAll(estadoId)
+  updateCidade() {
+    let estado_Id = this.formGroup.value.estadoId;
+    this.cidadeService.findAll(estado_Id)
       .subscribe(response => {
         this.cidades = response;
         this.formGroup.controls.cidadeId.setValue(null);
@@ -64,6 +68,27 @@ export class SignupPage {
   }
 
   signupUser() {
-    console.log('aaa');
+    this.clienteService.insert(this.formGroup.value)
+      .subscribe(response => {
+        this.showInsertOk();
+      },
+        error1 => {})
+  }
+
+  showInsertOk() {
+    let alert = this.alert.create({
+      title: 'Sucesso!',
+      message: 'Cadastro efetuado com sucesso',
+      enableBackdropDismiss: false,
+      buttons: [
+        {
+          text: 'Ok',
+          handler: () => {
+            this.navCtrl.goToRoot(null);
+          }
+        }
+      ]
+    });
+    alert.present();
   }
 }
