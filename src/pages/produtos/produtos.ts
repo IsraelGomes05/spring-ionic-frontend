@@ -39,4 +39,8 @@ export class ProdutosPage {
           error1 => {});
     }
   }
+
+  showDetail(){
+    this.navCtrl.push('ProdutoDetailPage');
+  }
 }
